@@ -9,10 +9,22 @@ from .models import Profile
 from .forms import UserRegisterForm
 from django.contrib import messages
 
-# Create your views here.
-class HomeView(LoginRequiredMixin, ListView):
-    template_name = 'pages/index.html'
-    model = Profile
+def index(request):
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user=request.user)
+    else:
+        profile = ''
+    
+    context = {
+        'profile': profile
+    }
+
+    return render(request,'pages/index.html',context)
+
+# Create Home (not used)
+#class HomeView(LoginRequiredMixin, ListView):
+#    template_name = 'pages/index.html'
+#    model = Profile
 
 class SignUpView(SuccessMessageMixin, CreateView):
     template_name = 'pages/signup.html'
