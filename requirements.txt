@@ -1,0 +1,10 @@
+django
+uwsgi
+psycopg2
+whitenoise
+psycopg2-binary
+pillow
+django-crispy-forms
+django-import-export
+dj-database-url
+django-allauth
