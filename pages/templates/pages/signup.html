@@ -1,0 +1,18 @@
+{% extends 'pages/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title  %}
+Sign Up page to Penpals Django App
+{% endblock title  %}
+
+{% block content %}
+
+<div class="col-sm-8 mx-auto">
+    <form action="" method = "POST" enctype = "multipart/form-data">
+    {{form|crispy}}
+    {% csrf_token %}
+    <input type="submit" value="Sign Up" class="w-100 text-white text-center my-2 btn btn-info">
+    </form>
+</div>
+{% endblock content %}

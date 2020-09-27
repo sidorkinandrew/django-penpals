@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pages.apps.PagesConfig',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -127,4 +128,13 @@ STATICFILES_DIRS = (
 )
 
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 print(BASE_DIR, STATICFILES_DIRS)
+
+# for authetification
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = '/'

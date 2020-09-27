@@ -27,6 +27,22 @@
     </nav>
     <div class="container mt-4">
     
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        <div class="alert alert-danger" role="alert">
+          <a href="#" class="close" data-dismiss="alert" aria-lavel="close">&times;</a>
+          {{message}}
+        </div>
+      {% else %}
+        <div class="alert alert-{{message.tags}}" role="alert">
+          <a href="#" class="close" data-dismiss="alert" aria-lavel="close">&times;</a>
+          {{message}}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% else %}{% endif %}
+
     {% block content %}
     {% endblock content %}
     
@@ -38,7 +54,7 @@
       </p></div>
     </footer>
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     {% block js %}
     {% endblock js %}
   </body>
