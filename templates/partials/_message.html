@@ -1,0 +1,15 @@
+  {% if messages %}
+  <br>
+    {% for message in messages %}
+    <div class="container">
+      {% if message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {% else %}
+        <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+      {% endif %}
+        <a href="#" class="close" data-dismiss="alert" aria-label="close"><span aria-hidden="true">&times;</span></a>
+        {{message}}
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
