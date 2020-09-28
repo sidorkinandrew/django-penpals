@@ -21,6 +21,13 @@ def index(request):
 
     return render(request,'pages/index.html',context)
 
+def profile(request, profile_id, *args, **kwargs):
+    profile = Profile.objects.get(id=profile_id)
+    context = {
+        'profile': profile,
+    }
+    return render(request, 'pages/profile.html', context)
+
 # Create Home (not used)
 #class HomeView(LoginRequiredMixin, ListView):
 #    template_name = 'pages/index.html'
