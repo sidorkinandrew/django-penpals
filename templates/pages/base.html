@@ -15,34 +15,36 @@
   <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-md bg-dark navbar-dark">
       <div class="container">
-        <a href="" class="navbar navbar-brand">Penpals</a>
-        <button
-          class="navbar-toggle"
-          data-toggle="collapse"
-          data-target="#collapsibleNavbar"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="d-flex justify-content-start">
+          <a href="" class="navbar navbar-brand">Penpals</a>
+          <a href="{% url 'logout' %}" class="navbar navbar-brand">Logout</a>
+          <a href="{% url 'login' %}" class="navbar navbar-brand">Login</a>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button
+            class="navbar-toggle"
+            data-toggle="collapse"
+            data-target="#collapsibleNavbar"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
       </div>
     </nav>
     <div class="container mt-4">
+      {% include "partials/_message.html" %}
       
-    {% include "partials/_message.html" %}
+      {% block content %} 
 
-    {% block content %}
-    {% endblock content %}
-    
+      {% endblock content %}
     </div>
     <footer class="bg-dark text-white mt-auto">
       <div class="container py-4">
-      <p class="text-center">
-      Copyright &copy; PenPals 2020
-      </p></div>
+        <p class="text-center">Copyright &copy; PenPals 2020</p>
+      </div>
     </footer>
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    {% block js %}
-    {% endblock js %}
+    {% block js %} {% endblock js %}
   </body>
 </html>
- 
