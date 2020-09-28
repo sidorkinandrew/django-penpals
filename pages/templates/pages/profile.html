@@ -1,0 +1,22 @@
+{% extends 'pages/base.html' %}
+
+{% block content %}
+
+<div class="row">
+  {% include 'pages/partials/_sidebar.html' %}
+  <div class="col-md-9 col-sm-12">
+  {% if request.user.profile.id == profile.id %}
+    <div class="float-right">
+      <a href="#" class="btn btn-info">Edit profile</a>
+    </div>
+    {% endif %}
+    <h3>{{profile.user}}</h3>
+    <div class="my-4">
+        <h6>{{profile.first}} {{profile.last}} | {{profile.user.email}}</h6>
+        <h6>Speaks: {{profile.speaks}}</h6>
+        <h6>Learns: {{profile.learns}}</h6>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
