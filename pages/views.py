@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.forms import UserCreationForm
-from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.urls import reverse_lazy
 from .models import Profile
 from .forms import UserRegisterForm, ProfileEditForm
@@ -38,6 +38,12 @@ class ProfileView(SuccessMessageMixin, DetailView):
     def get_object(self):
         return Profile.objects.get(id=self.kwargs['profile_id'])
 
+
+class ProfileEdit(UpdateView):
+    model = Profile
+    template_name = 'pages/edit.html'
+    form_class = ProfileEditForm
+    context_object_name = 'profile'
 
 def edit_profile(request):
     pass
