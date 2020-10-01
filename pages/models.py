@@ -18,6 +18,7 @@ class Profile(models.Model):
     friends = models.ManyToManyField('self', blank=True)
     speaks = models.CharField(max_length=200, blank=True, null=True)
     learns = models.CharField(max_length=200, blank=True, null=True)
+#    url = models.URLField()
 
     def __str__(self):
         return str(self.user)

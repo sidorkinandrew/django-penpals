@@ -7,7 +7,7 @@
   <div class="col-md-9 col-sm-12">
   {% if request.user.profile.id == profile.id %}
     <div class="float-right">
-      <a href="{% url 'pages:edit' profile.id %}" class="btn btn-info">Edit profile</a>
+      <a href="{% url 'pages:edit' %}" class="btn btn-info">Edit profile</a>
     </div>
     {% endif %}
     <h3>{{profile.user}}</h3>

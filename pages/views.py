@@ -34,7 +34,6 @@ class ProfileView(SuccessMessageMixin, DetailView):
     form_class = ProfileEditForm
     context_object_name = 'profile'
     model = Profile
-
     def get_object(self):
         return Profile.objects.get(id=self.kwargs['profile_id'])
 
@@ -46,7 +45,7 @@ class ProfileEdit(UpdateView):
     context_object_name = 'profile'
 
     def get_object(self):
-        return Profile.objects.get(id=self.kwargs['profile_id'])
+        return Profile.objects.get(id=self.request.user.profile.id) #  self.kwargs['profile_id'])
 
 def edit_profile(request):
     pass
