@@ -38,11 +38,12 @@ class ProfileView(SuccessMessageMixin, DetailView):
         return Profile.objects.get(id=self.kwargs['profile_id'])
 
 
-class ProfileEdit(UpdateView):
+class ProfileEdit(SuccessMessageMixin, UpdateView):
     model = Profile
     template_name = 'pages/edit.html'
     form_class = ProfileEditForm
     context_object_name = 'profile'
+    success_message = "Your profile was updated successfully"
 
     def get_object(self):
         return Profile.objects.get(id=self.request.user.profile.id) #  self.kwargs['profile_id'])
