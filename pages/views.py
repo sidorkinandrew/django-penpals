@@ -45,6 +45,9 @@ class ProfileEdit(UpdateView):
     form_class = ProfileEditForm
     context_object_name = 'profile'
 
+    def get_object(self):
+        return Profile.objects.get(id=self.kwargs['profile_id'])
+
 def edit_profile(request):
     pass
 # Create Home (not used)
