@@ -12,17 +12,22 @@ from .forms import UserRegisterForm, ProfileEditForm, ProfileViewForm
 from django.contrib import messages
 from .utils import LANGUAGE_CHOICES, from_value_to_label
 
-def index(request):
-    if request.user.is_authenticated:
-        profile = Profile.objects.get(id=request.user.id)
-    else:
-        profile = ''
-    
-    context = {
-        'profile': profile
-    }
 
-    return render(request,'pages/index.html',context)
+class HomeView( DetailView):
+    template_name = 'pages/index.html'
+    form_class = ProfileViewForm
+    context_object_name = 'profile'
+    model = Profile
+    
+    def get_object(self):
+        if self.request.user.is_authenticated:
+            instance = Profile.objects.get(id=self.request.user.profile.id)
+            instance.speaks = from_value_to_label(instance.speaks)
+            instance.learns = from_value_to_label(instance.learns)
+            return instance
+        else:
+            return ""
+
 
 #def profile(request, profile_id, *args, **kwargs):
 #    profile = Profile.objects.get(id=profile_id)
