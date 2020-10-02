@@ -23,7 +23,6 @@ class ProfileViewForm(UserChangeForm, forms.ModelForm):
         fields = ['first', 'last', 'speaks', 'learns', 'photo']
 
 
-
 class ProfileEditForm(UserChangeForm, forms.ModelForm):
     first = forms.CharField(max_length=100, required=True)
     last = forms.CharField(max_length=100, required=True)
@@ -33,3 +32,11 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['first', 'last', 'speaks', 'learns', 'photo']
+
+class SearchForm(forms.ModelForm):
+    speaks = forms.CharField(max_length=100, required=True)
+    learns = forms.CharField(max_length=100, required=True)
+
+    class Meta:
+        model = Profile
+        fields = ['speaks', 'learns']

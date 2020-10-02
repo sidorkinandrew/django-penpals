@@ -1,7 +1,55 @@
-{% extends 'pages/base.html' %}
-
-{% block content %}
+{% extends 'pages/base.html' %} {% load crispy_forms_tags %} {% block content %}
 <div class="row">
-    {% include 'pages/partials/_sidebar.html' %}
+  {% include 'pages/partials/_sidebar.html' %}
+  <div class="col-lg-9 col-md-9 col-sm-12">
+    <div class="card bg-light">
+      <div class="card-header text-center">Search for Penpals</div>
+      <div class="card-body">
+        <form action="" method="get">
+          <div class="form-group">
+            <label for="speaks">Speaks</label>
+            <input
+              type="text"
+              name="speaks"
+              value="{{request.GET.speaks}}"
+              class="form-control"
+              id="speaks"
+              placeholder="value1, value2"
+            />
+          </div>
+          <div class="form-group">
+            <label for="learns">Learns</label>
+            <input
+              type="text"
+              name="learns"
+              value="{{request.GET.learns}}"
+              class="form-control"
+              id="learns"
+              placeholder="value1, value2"
+            />
+          </div>
+          <button type="submit" class="btn btn-info">Search</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
+
+    <div class="row">
+        {% for u in users %}
+            <div class="col-md-3 col-sm-6">
+                <div class="card">
+                    <img src="{{u.photo.url}}" class="card-img-top mx-auto">
+                    <div class="card-body">
+                        <h5 class="card-title text-center"><a href="{{u.get_absolute_url}}">{{u}}</a></h5>
+                        <p class="card-text">
+                            <span><strong>Speaks: </strong>{{u.speaks}}</span></br>
+                            <span><strong>Learns: </strong>{{u.learns}}</span></br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
 {% endblock content %}

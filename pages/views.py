@@ -8,12 +8,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.urls import reverse_lazy
 from .models import Profile
-from .forms import UserRegisterForm, ProfileEditForm, ProfileViewForm
+from .forms import * # UserRegisterForm, ProfileEditForm, ProfileViewForm
 from django.contrib import messages
 from .utils import LANGUAGE_CHOICES, from_value_to_label
 
 
-class HomeView( DetailView):
+class HomeView(DetailView):
     template_name = 'pages/index.html'
     form_class = ProfileViewForm
     context_object_name = 'profile'
@@ -21,20 +21,27 @@ class HomeView( DetailView):
     
     def get_object(self):
         if self.request.user.is_authenticated:
-            instance = Profile.objects.get(id=self.request.user.profile.id)
-            instance.speaks = from_value_to_label(instance.speaks)
-            instance.learns = from_value_to_label(instance.learns)
-            return instance
+            self.instance = Profile.objects.get(id=self.request.user.profile.id)
+            self.instance.speaks = from_value_to_label(self.instance.speaks)
+            self.instance.learns = from_value_to_label(self.instance.learns)
         else:
-            return ""
+            self.instance = Profile.objects.none()
+        return self.instance
+    
+    def get_context_data(self, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
+        self.users = Profile.objects.all()
+        if self.request.user.is_authenticated:
+            self.users = self.users.exclude(id=self.request.user.profile.id)
+        for user in self.users:
+            user.speaks = from_value_to_label(user.speaks)
+            user.learns = from_value_to_label(user.learns)
 
-
-#def profile(request, profile_id, *args, **kwargs):
-#    profile = Profile.objects.get(id=profile_id)
-#    context = {
-#        'profile': profile,
-#    }
-#    return render(request, 'pages/profile.html', context)
+        context.update({
+            'users': self.users,
+            'profile': self.instance,
+        })
+        return context
 
 class ProfileView(SuccessMessageMixin, DetailView):
     template_name = 'pages/profile.html'
@@ -62,28 +69,26 @@ class ProfileEdit(SuccessMessageMixin, UpdateView):
         return {'speaks': ast.literal_eval(self.request.user.profile.speaks),
                 'learns': ast.literal_eval(self.request.user.profile.learns)}
 
-
     def get_success_url(self):
           profile_id=self.request.user.profile.id
           return reverse_lazy('pages:profile', kwargs={'profile_id': profile_id})
-
-        #        print(self.request.user.profile.id)
-#        instance.speaks = self.from_value_to_label(instance.speaks)
-#        print(instance.speaks)
-#        print(instance.learns)
-#        print(dir(instance))
-#        return instance
-
-
-def edit_profile(request):
-    pass
-# Create Home (not used)
-#class HomeView(LoginRequiredMixin, ListView):
-#    template_name = 'pages/index.html'
-#    model = Profile
 
 class SignUpView(SuccessMessageMixin, CreateView):
     template_name = 'pages/signup.html'
     form_class = UserRegisterForm
     success_url = reverse_lazy('pages:index')
     success_message = "Your profile was created successfully"
+
+class SearchForm(DetailView):
+    template_name = 'pages/index.html'
+    form_class = SearchForm
+    context_object_name = 'profile'
+    model = Profile
+    profiles = []
+    
+    def get_queryset(self):
+        form = self.form_class(self.request.GET)
+        print(form)
+        if form.is_valid():
+            return Profile.objects.filter(speaks__icontains=form.cleaned_data['speaks'])
+        return Profile.objects.all()
