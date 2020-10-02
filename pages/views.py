@@ -1,3 +1,4 @@
+import ast
 from django.http import request
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
@@ -9,7 +10,7 @@ from django.urls import reverse_lazy
 from .models import Profile
 from .forms import UserRegisterForm, ProfileEditForm, ProfileViewForm
 from django.contrib import messages
-from .utils import LANGUAGE_CHOICES
+from .utils import LANGUAGE_CHOICES, from_value_to_label
 
 def index(request):
     if request.user.is_authenticated:
@@ -35,17 +36,11 @@ class ProfileView(SuccessMessageMixin, DetailView):
     form_class = ProfileViewForm
     context_object_name = 'profile'
     model = Profile
-
-    def from_value_to_label(self, field):
-        if field is not None:
-            list_of_labels = [label for value, label in LANGUAGE_CHOICES if value in field]
-            return ", ".join(list_of_labels)
-        return field
     
     def get_object(self): 
         instance = Profile.objects.get(id=self.kwargs['profile_id'])  # self.request.user.profile.id)
-        instance.speaks = self.from_value_to_label(instance.speaks)
-        instance.learns = self.from_value_to_label(instance.learns)
+        instance.speaks = from_value_to_label(instance.speaks)
+        instance.learns = from_value_to_label(instance.learns)
         return instance
 
 class ProfileEdit(SuccessMessageMixin, UpdateView):
@@ -55,8 +50,13 @@ class ProfileEdit(SuccessMessageMixin, UpdateView):
     context_object_name = 'profile'
     success_message = "Your profile was updated successfully"  
 
-    def get_object(self): 
-        return Profile.objects.get(id=self.request.user.profile.id) #  self.kwargs['profile_id'])
+    def get_object(self):
+        return  Profile.objects.get(id=self.request.user.profile.id) #  self.kwargs['profile_id'])
+
+    def get_initial(self):
+        return {'speaks': ast.literal_eval(self.request.user.profile.speaks),
+                'learns': ast.literal_eval(self.request.user.profile.learns)}
+
 
     def get_success_url(self):
           profile_id=self.request.user.profile.id
