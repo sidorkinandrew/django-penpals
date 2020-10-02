@@ -16,7 +16,7 @@
     <nav class="navbar navbar-expand-md bg-dark navbar-dark">
       <div class="container">
         <div class="d-flex justify-content-start">
-          <a href="" class="navbar navbar-brand">Penpals</a>
+          <a href="{% url 'pages:index' %}" class="navbar navbar-brand">Penpals</a>
           <a href="{% url 'logout' %}" class="navbar navbar-brand">Logout</a>
           <a href="{% url 'login' %}" class="navbar navbar-brand">Login</a>
         </div>
@@ -28,6 +28,15 @@
           >
             <span class="navbar-toggler-icon"></span>
           </button>
+          <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav ml-auto">
+              {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                <a href="{{request.user.profile.get_absolute_url}}" class="nav-link">Profile</a>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
         </div>
       </div>
     </nav>
