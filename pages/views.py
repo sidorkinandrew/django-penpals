@@ -86,18 +86,24 @@ class ProfileSearch(ListView, HomeView):
     users = Profile.objects.none()
 
     def get_queryset(self):
-        query = self.request.GET.get('speaks')
-        print(query)
-        query = from_label_to_value(query)
-        print(query)
-        if query:
-            self.users = Profile.objects.filter(speaks__contains=query)
-            return self.users
-        self.users = Profile.objects.all()
+        query_speaks = from_label_to_value(self.request.GET.get('speaks'))
+        print('query_speaks:',query_speaks, self.request.GET.get('speaks'))
+        query_learns = from_label_to_value(self.request.GET.get('learns'))
+        print('query_learns:',query_learns, self.request.GET.get('learns'))
+        self.users = Profile.objects.none()
+        for language in query_speaks:
+            self.users |= Profile.objects.filter(speaks__icontains=language)
+        for language in query_learns:
+            self.users |= Profile.objects.filter(learns__icontains=language)
+        if (not self.request.GET.get('speaks')) and (not self.request.GET.get('learns')):
+            self.users = Profile.objects.all()
+        print(self.users)
         return self.users
 
     def get_context_data(self, **kwargs):
         self.instance = self.get_object()
+        if self.request.user.is_authenticated:
+            self.users = self.users.exclude(id=self.request.user.profile.id)
         context = {
             'users': self.users,
             'profile': self.instance,
