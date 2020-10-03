@@ -19,7 +19,8 @@ class HomeView(DetailView):
     context_object_name = 'profile'
     model = Profile
     users = Profile.objects.none()
-   
+    objects_per_page = 8
+
     def get_object(self):
         if self.request.user.is_authenticated:
             self.instance = Profile.objects.get(id=self.request.user.profile.id)
@@ -34,7 +35,7 @@ class HomeView(DetailView):
             self.users = self.users.exclude(id=self.request.user.profile.id)
 
         page_number = self.request.GET.get('page')
-        paginator_object = Paginator(self.users, 1)
+        paginator_object = Paginator(self.users, self.objects_per_page)
         page_object = paginator_object.get_page(page_number)
 
         context.update({
@@ -84,6 +85,7 @@ class ProfileSearch(ListView, HomeView):
     model = Profile
     instance = Profile.objects.none()
     users = Profile.objects.none()
+    objects_per_page = 8
 
     def get_queryset(self):
         query_speaks = from_label_to_value(self.request.GET.get('speaks'))
@@ -110,7 +112,7 @@ class ProfileSearch(ListView, HomeView):
             self.users = self.users.exclude(id=self.request.user.profile.id)
         
         page_number = self.request.GET.get('page')
-        paginator_object = Paginator(self.users, 1)
+        paginator_object = Paginator(self.users, self.objects_per_page)
         page_object = paginator_object.get_page(page_number)
         
         context = {
