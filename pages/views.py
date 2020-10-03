@@ -1,4 +1,3 @@
-import ast
 from django.http import request
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
@@ -11,6 +10,7 @@ from .models import Profile
 from .forms import * # UserRegisterForm, ProfileEditForm, ProfileViewForm
 from django.contrib import messages
 from .utils import *
+from django.core.paginator import Paginator
 
 
 class HomeView(DetailView):
@@ -18,12 +18,11 @@ class HomeView(DetailView):
     form_class = ProfileViewForm
     context_object_name = 'profile'
     model = Profile
-    
+    users = Profile.objects.none()
+   
     def get_object(self):
         if self.request.user.is_authenticated:
             self.instance = Profile.objects.get(id=self.request.user.profile.id)
-#            self.instance.speaks = from_value_to_label(self.instance.speaks)
-#            self.instance.learns = from_value_to_label(self.instance.learns)
         else:
             self.instance = Profile.objects.none()
         return self.instance
@@ -33,12 +32,9 @@ class HomeView(DetailView):
         self.users = Profile.objects.all()
         if self.request.user.is_authenticated:
             self.users = self.users.exclude(id=self.request.user.profile.id)
-#        for user in self.users:
-#            user.speaks = from_value_to_label(user.speaks)
-#            user.learns = from_value_to_label(user.learns)
-
+        
         context.update({
-            'users': self.users,
+            'page_object': self.users,
             'profile': self.instance,
         })
         return context
@@ -80,16 +76,14 @@ class SignUpView(SuccessMessageMixin, CreateView):
 
 class ProfileSearch(ListView, HomeView):
     template_name = 'pages/index.html'
-    context_object_name = 'users'
+    context_object_name = 'page_object'
     model = Profile
     instance = Profile.objects.none()
     users = Profile.objects.none()
 
     def get_queryset(self):
         query_speaks = from_label_to_value(self.request.GET.get('speaks'))
-        print('query_speaks:',query_speaks, self.request.GET.get('speaks'))
         query_learns = from_label_to_value(self.request.GET.get('learns'))
-        print('query_learns:',query_learns, self.request.GET.get('learns'))
         self.users = Profile.objects.none()
         for id, language in enumerate(query_speaks):
             if id == 0:
@@ -103,17 +97,19 @@ class ProfileSearch(ListView, HomeView):
                 self.users = self.users.filter(learns__icontains=language)
         if (not self.request.GET.get('speaks')) and (not self.request.GET.get('learns')):
             self.users = Profile.objects.all()
-        print(self.users)
         return self.users
 
     def get_context_data(self, **kwargs):
         self.instance = self.get_object()
         if self.request.user.is_authenticated:
             self.users = self.users.exclude(id=self.request.user.profile.id)
+        
+        page_number = self.request.GET.get('page')
+        paginator_object = Paginator(self.users, 1)
+        page_object = paginator_object.get_page(page_number)
+        
         context = {
-            'users': self.users,
+            'page_object': page_object, #self.users,
             'profile': self.instance,
         }
         return context
-    
-

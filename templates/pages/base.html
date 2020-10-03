@@ -47,6 +47,11 @@
 
       {% endblock content %}
     </div>
+    
+    {% if page_object.has_other_pages %}
+      {{page_object}}
+    {% endif %}
+
     <footer class="bg-dark text-white mt-auto">
       <div class="container py-4">
         <p class="text-center">Copyright &copy; PenPals 2020</p>
