@@ -1,6 +1,7 @@
+from django.contrib.auth import authenticate, login
 from django.http import request
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.forms import UserCreationForm
@@ -78,6 +79,15 @@ class SignUpView(SuccessMessageMixin, CreateView):
     form_class = UserRegisterForm
     success_url = reverse_lazy('pages:index')
     success_message = "Your profile was created successfully"
+    def form_valid(self, form):
+        return_page = super().form_valid(form)
+        user = authenticate(
+            username=form.cleaned_data["username"],
+            password=form.cleaned_data["password1"],
+        )
+        login(self.request, user)
+        return return_page
+
 
 class ProfileSearch(ListView, HomeView):
     template_name = 'pages/index.html'
