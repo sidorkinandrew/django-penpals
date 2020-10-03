@@ -47,9 +47,15 @@
 
       {% endblock content %}
     </div>
-    
+
     {% if page_object.has_other_pages %}
-      {{page_object}}
+    <ul class="pagination justify-content-center">
+      {% for page in page_object.paginator.page_range %}
+        <li class="page-item {% if page_object.number == page %} active {% endif %}">
+          <a href="?page={{page}}" class="page-link">{{page}}</a>
+        </li>
+      {% endfor %}
+    </ul>
     {% endif %}
 
     <footer class="bg-dark text-white mt-auto">

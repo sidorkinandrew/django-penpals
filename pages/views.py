@@ -32,9 +32,13 @@ class HomeView(DetailView):
         self.users = Profile.objects.all()
         if self.request.user.is_authenticated:
             self.users = self.users.exclude(id=self.request.user.profile.id)
-        
+
+        page_number = self.request.GET.get('page')
+        paginator_object = Paginator(self.users, 1)
+        page_object = paginator_object.get_page(page_number)
+
         context.update({
-            'page_object': self.users,
+            'page_object': page_object,  # self.users,
             'profile': self.instance,
         })
         return context
