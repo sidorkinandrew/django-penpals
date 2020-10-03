@@ -52,7 +52,7 @@
     <ul class="pagination justify-content-center">
       {% for page in page_object.paginator.page_range %}
         <li class="page-item {% if page_object.number == page %} active {% endif %}">
-          <a href="?page={{page}}" class="page-link">{{page}}</a>
+          <a href="?{{search_query}}page={{page}}" class="page-link">{{page}}</a>
         </li>
       {% endfor %}
     </ul>

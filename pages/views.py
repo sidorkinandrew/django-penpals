@@ -89,6 +89,7 @@ class ProfileSearch(ListView, HomeView):
         query_speaks = from_label_to_value(self.request.GET.get('speaks'))
         query_learns = from_label_to_value(self.request.GET.get('learns'))
         self.users = Profile.objects.none()
+        self.search_query = f"speaks={self.request.GET.get('speaks')}&learns={self.request.GET.get('learns')}&"
         for id, language in enumerate(query_speaks):
             if id == 0:
                 self.users = Profile.objects.filter(speaks__icontains=language)
@@ -115,5 +116,6 @@ class ProfileSearch(ListView, HomeView):
         context = {
             'page_object': page_object, #self.users,
             'profile': self.instance,
+            'search_query': self.search_query,
         }
         return context
