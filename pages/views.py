@@ -10,7 +10,7 @@ from django.urls import reverse_lazy
 from .models import Profile
 from .forms import * # UserRegisterForm, ProfileEditForm, ProfileViewForm
 from django.contrib import messages
-from .utils import LANGUAGE_CHOICES, from_value_to_label
+from .utils import *
 
 
 class HomeView(DetailView):
@@ -22,8 +22,8 @@ class HomeView(DetailView):
     def get_object(self):
         if self.request.user.is_authenticated:
             self.instance = Profile.objects.get(id=self.request.user.profile.id)
-            self.instance.speaks = from_value_to_label(self.instance.speaks)
-            self.instance.learns = from_value_to_label(self.instance.learns)
+#            self.instance.speaks = from_value_to_label(self.instance.speaks)
+#            self.instance.learns = from_value_to_label(self.instance.learns)
         else:
             self.instance = Profile.objects.none()
         return self.instance
@@ -33,9 +33,9 @@ class HomeView(DetailView):
         self.users = Profile.objects.all()
         if self.request.user.is_authenticated:
             self.users = self.users.exclude(id=self.request.user.profile.id)
-        for user in self.users:
-            user.speaks = from_value_to_label(user.speaks)
-            user.learns = from_value_to_label(user.learns)
+#        for user in self.users:
+#            user.speaks = from_value_to_label(user.speaks)
+#            user.learns = from_value_to_label(user.learns)
 
         context.update({
             'users': self.users,
@@ -51,8 +51,6 @@ class ProfileView(SuccessMessageMixin, DetailView):
     
     def get_object(self): 
         instance = Profile.objects.get(id=self.kwargs['profile_id'])  # self.request.user.profile.id)
-        instance.speaks = from_value_to_label(instance.speaks)
-        instance.learns = from_value_to_label(instance.learns)
         return instance
 
 class ProfileEdit(SuccessMessageMixin, UpdateView):
@@ -66,8 +64,9 @@ class ProfileEdit(SuccessMessageMixin, UpdateView):
         return  Profile.objects.get(id=self.request.user.profile.id) #  self.kwargs['profile_id'])
 
     def get_initial(self):
-        return {'speaks': ast.literal_eval(self.request.user.profile.speaks),
-                'learns': ast.literal_eval(self.request.user.profile.learns)}
+        initial = {'speaks': from_label_to_value(self.request.user.profile.speaks),
+                'learns': from_label_to_value(self.request.user.profile.learns)}
+        return initial
 
     def get_success_url(self):
           profile_id=self.request.user.profile.id
@@ -81,27 +80,22 @@ class SignUpView(SuccessMessageMixin, CreateView):
 
 class ProfileSearch(ListView, HomeView):
     template_name = 'pages/index.html'
-#    form_class = SearchForm
     context_object_name = 'users'
     model = Profile
     instance = Profile.objects.none()
     users = Profile.objects.none()
 
     def get_queryset(self):
-        query = self.request.GET.get('speaks')#.replace(" ", "")
+        query = self.request.GET.get('speaks')
         print(query)
         if query:
             self.users = Profile.objects.filter(speaks__contains=query)
-            print(self.users)
             return self.users
         self.users = Profile.objects.all()
-        print(self.users.first().speaks, self.users.first().learns)
         return self.users
 
     def get_context_data(self, **kwargs):
         self.instance = self.get_object()
-        print('profile:', self.instance, self.request.user.is_authenticated)
-        print('users:', self.users)
         context = {
             'users': self.users,
             'profile': self.instance,

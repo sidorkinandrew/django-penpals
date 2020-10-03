@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.urls import reverse
+from .utils import *
 
 
 # Create your models here.
@@ -20,6 +21,11 @@ class Profile(models.Model):
     learns = models.CharField(max_length=200, blank=True, null=True)
 #    url = models.URLField()
 
+    def __init__(self, *args, **kwargs):
+         super(Profile, self).__init__(*args, **kwargs)
+         self.speaks = from_value_to_label(self.speaks)
+         self.learns = from_value_to_label(self.learns)
+
     def __str__(self):
         return str(self.user)
 
@@ -28,6 +34,7 @@ class Profile(models.Model):
 
     class Meta:
         ordering = ['-id']
+
 
 
 def create_profile(sender, instance, created, **kwargs):
