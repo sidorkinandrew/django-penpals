@@ -88,6 +88,8 @@ class ProfileSearch(ListView, HomeView):
     def get_queryset(self):
         query = self.request.GET.get('speaks')
         print(query)
+        query = from_label_to_value(query)
+        print(query)
         if query:
             self.users = Profile.objects.filter(speaks__contains=query)
             return self.users
