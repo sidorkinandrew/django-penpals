@@ -79,16 +79,33 @@ class SignUpView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('pages:index')
     success_message = "Your profile was created successfully"
 
-class SearchForm(DetailView):
+class ProfileSearch(ListView, HomeView):
     template_name = 'pages/index.html'
-    form_class = SearchForm
-    context_object_name = 'profile'
+#    form_class = SearchForm
+    context_object_name = 'users'
     model = Profile
-    profiles = []
-    
+    instance = Profile.objects.none()
+    users = Profile.objects.none()
+
     def get_queryset(self):
-        form = self.form_class(self.request.GET)
-        print(form)
-        if form.is_valid():
-            return Profile.objects.filter(speaks__icontains=form.cleaned_data['speaks'])
-        return Profile.objects.all()
+        query = self.request.GET.get('speaks')#.replace(" ", "")
+        print(query)
+        if query:
+            self.users = Profile.objects.filter(speaks__contains=query)
+            print(self.users)
+            return self.users
+        self.users = Profile.objects.all()
+        print(self.users.first().speaks, self.users.first().learns)
+        return self.users
+
+    def get_context_data(self, **kwargs):
+        self.instance = self.get_object()
+        print('profile:', self.instance, self.request.user.is_authenticated)
+        print('users:', self.users)
+        context = {
+            'users': self.users,
+            'profile': self.instance,
+        }
+        return context
+    
+
