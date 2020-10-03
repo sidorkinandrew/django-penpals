@@ -91,10 +91,16 @@ class ProfileSearch(ListView, HomeView):
         query_learns = from_label_to_value(self.request.GET.get('learns'))
         print('query_learns:',query_learns, self.request.GET.get('learns'))
         self.users = Profile.objects.none()
-        for language in query_speaks:
-            self.users |= Profile.objects.filter(speaks__icontains=language)
-        for language in query_learns:
-            self.users |= Profile.objects.filter(learns__icontains=language)
+        for id, language in enumerate(query_speaks):
+            if id == 0:
+                self.users = Profile.objects.filter(speaks__icontains=language)
+            else:
+                self.users = self.users.filter(speaks__icontains=language)
+        for id, language in enumerate(query_learns):
+            if id == 0 and self.users.count() == 0:
+                self.users = Profile.objects.filter(learns__icontains=language)
+            else:
+                self.users = self.users.filter(learns__icontains=language)
         if (not self.request.GET.get('speaks')) and (not self.request.GET.get('learns')):
             self.users = Profile.objects.all()
         print(self.users)
