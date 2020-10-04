@@ -7,7 +7,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.urls import reverse_lazy
-from .models import Profile
+from .models import FriendRequest, Profile
 from .forms import * # UserRegisterForm, ProfileEditForm, ProfileViewForm
 from django.contrib import messages
 from .utils import *
@@ -54,6 +54,16 @@ class ProfileView(SuccessMessageMixin, DetailView):
     def get_object(self): 
         instance = Profile.objects.get(id=self.kwargs['profile_id'])  # self.request.user.profile.id)
         return instance
+    
+#    def send_request(self, to_profile_id):
+#        if self.request.user.is_authenticated:
+#            to_profile = Profile.objects.get(pk=to_profile_id)
+#            friend_request = FriendRequest.objects.get_or_create(
+#                from_profile = self.request.user.profile,
+#                to_profile = to_profile
+#            )
+#        return reverse_lazy("pages:profile") #, profile_id = to_profile_id)
+
 
 class ProfileEdit(SuccessMessageMixin, UpdateView):
     model = Profile
@@ -131,3 +141,4 @@ class ProfileSearch(ListView, HomeView):
             'search_query': self.search_query,
         }
         return context
+    

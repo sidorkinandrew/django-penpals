@@ -9,4 +9,5 @@ urlpatterns = [
     path('profile/<int:profile_id>', ProfileView.as_view(), name="profile"),
     path("edit", ProfileEdit.as_view(), name="edit"),
     path("search", ProfileSearch.as_view(), name="search"),
+#    path("request/send/<int:to_profile_id>", ProfileView.send_request, name="send_request"),
 ]
