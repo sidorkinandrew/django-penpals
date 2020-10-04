@@ -59,13 +59,12 @@ class ProfileView(SuccessMessageMixin, DetailView):
         return self.instance
     
     def get_context_data(self, **kwargs):
-        self.instance = kwargs['object']
+        #self.instance = kwargs['object']
         self.friends = self.instance.friends.all()
         received_requests = FriendRequest.objects.filter(to_profile = self.instance)
         button_friend_text = ""
-        print("*"*40,'\nget_context_data', self.instance, self.friends)
-        if self.instance.profile.is_authenticated:
-            if self.instance not in self.user.profile.friends.all():
+        if self.request.user.is_authenticated:
+            if self.request.user.profile not in self.friends:
                 button_friend_text = "not_friend_yet"
                 if len(FriendRequest.objects.filter(from_profile = self.request.user.profile).filter(to_profile=self.instance))==1:
                     button_friend_text = "request_sent"
@@ -78,15 +77,20 @@ class ProfileView(SuccessMessageMixin, DetailView):
         return self.context_data
     
     def send_request(self, to_profile_id):
-        print('send_request', self.user, to_profile_id, type(to_profile_id))
+        print('send_request', self.user, to_profile_id)
         if self.user.is_authenticated:
             to_profile = Profile.objects.get(pk=to_profile_id)
-            friend_request = FriendRequest.objects.get_or_create(
+            self.friends = FriendRequest.objects.get_or_create(
                 from_profile = self.user.profile,
                 to_profile = to_profile
             )
-            print(self.user.is_authenticated)
-        return  redirect(reverse('pages:profile', kwargs={ 'profile_id': to_profile_id }))
+        print("self.user.is_authenticated: ", self.user.is_authenticated)
+        print("self.user.profile.friends.all(): ", self.user.profile.friends.all())
+        print("self.friends: ", self.friends)
+        print("FriendRequest.objects.filter(to_profile = self.user.profile): ", 
+                FriendRequest.objects.filter(to_profile = self.user.profile))
+        print("to_profile.friends.all(): ", to_profile.friends.all())
+        return redirect(reverse('pages:profile', kwargs={ 'profile_id': to_profile_id }))
 
 
 class ProfileEdit(SuccessMessageMixin, UpdateView):

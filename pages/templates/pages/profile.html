@@ -16,7 +16,7 @@
         </div>
       {% elif button_friend_text == 'request_sent'%}
         <div class="float-right">
-          <a href="{% url 'pages:send_request' profile.id %}" class="btn btn-info">Cancel request</a>
+          <a href="{% url 'pages:send_request' profile.id %}" class="btn btn-warning">Cancel request</a>
         </div>
       {% endif %}
     {% endif %}
