@@ -61,19 +61,21 @@ class ProfileView(SuccessMessageMixin, DetailView):
     def get_context_data(self, **kwargs):
         self.friends = self.instance.friends.all()
         received_requests = FriendRequest.objects.filter(to_profile = self.instance)
+        outgoing_requests = self.instance.from_profile.all()
         button_friend_text = ""
         if self.request.user.is_authenticated:
             if self.request.user.profile not in self.friends:
                 button_friend_text = "not_friend_yet"
                 if len(FriendRequest.objects.filter(from_profile = self.request.user.profile).filter(to_profile=self.instance))==1:
                     button_friend_text = "request_sent"
-        print("get_context_data 1: ", self.friends, received_requests)
+#        print("get_context_data 1: ", self.friends, received_requests)
 #        print("get_context_data 2: ", self.request.user.is_authenticated, self.request.user.profile)
 #        print("get_context_data 3: ", FriendRequest.objects.filter(from_profile = self.request.user.profile).filter(to_profile=self.instance))
         self.context_data = {
             'profile': self.instance,
             'friends': self.friends,
             'received_requests': received_requests,
+            'outgoing_requests': outgoing_requests,
             'button_friend_text': button_friend_text,
         }
         return self.context_data
@@ -99,6 +101,20 @@ class ProfileView(SuccessMessageMixin, DetailView):
             ).first()
             request_sent.delete()
         return redirect('pages:profile', profile_id = to_profile_id)  # redirect(reverse('pages:profile', kwargs={ 'profile_id': to_profile_id }))
+
+    def drop_friend_request(self, to_profile_id):
+        print('drop_request', self.user, to_profile_id)
+        if self.user.is_authenticated:
+            to_profile = Profile.objects.get(pk=to_profile_id)
+            request_sent = FriendRequest.objects.filter(
+                from_profile = self.user.profile,
+                to_profile = to_profile
+            ).first()
+            print(request_sent, 'to be deleted')
+            request_sent.delete()
+        return redirect('pages:profile', profile_id = self.user.profile.id)  # redirect(reverse('pages:profile', kwargs={ 'profile_id': to_profile_id }))
+
+
 
     def accept_friend_request(self, from_profile_id):
         print('accept_friend_request', self.user, from_profile_id)

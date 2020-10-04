@@ -63,6 +63,21 @@
         </table>
       </div>
     {% endif %}
+    {% if outgoing_requests %}
+      <div class="table-responsive">
+        <table class="table">
+          <caption>Outgoing friend requests:</caption>
+            <tbody>
+              {% for request_outgoing in outgoing_requests %}
+                <tr>
+                  <td><a href="{% url 'pages:profile' request_outgoing.to_profile.id %}" class="btn text-primary">{{request_outgoing.to_profile}}</a></td>
+                  <td><a href="{% url 'pages:drop_request' request_outgoing.to_profile.id %}" class="btn btn-danger">Cancel request</a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    {% endif %}
   </div>
 </div>
 
