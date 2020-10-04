@@ -11,5 +11,6 @@ urlpatterns = [
     path("search", ProfileSearch.as_view(), name="search"),
     path("request/send/<int:to_profile_id>", ProfileView.send_request, name="send_request"),
     path("request/cancel/<int:to_profile_id>", ProfileView.cancel_request, name="cancel_request"),
-    path("request/accept/<int:from_profile_id>", ProfileView.accept_friend_request, name="accept_request"),    
+    path("request/delete/<int:from_profile_id>", ProfileView.delete_friend_request, name="delete_request"),
+    path("request/accept/<int:from_profile_id>", ProfileView.accept_friend_request, name="accept_request"),
 ]

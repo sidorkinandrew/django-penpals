@@ -114,6 +114,17 @@ class ProfileView(SuccessMessageMixin, DetailView):
         request_received.delete()
         print(friend_to, friend_from, friend_to.friends)
         return redirect('pages:profile', profile_id = to_profile.id)  # redirect(reverse('pages:profile', kwargs={ 'profile_id': to_profile_id }))
+
+    def delete_friend_request(self, from_profile_id):
+        print('delete_friend_request', self.user, from_profile_id)
+        from_profile = Profile.objects.get(pk=from_profile_id)
+        to_profile = self.user.profile
+        request_received = FriendRequest.objects.filter(
+                from_profile = from_profile_id,
+                to_profile = self.user.profile,
+            ).first()
+        request_received.delete()
+        return redirect('pages:profile', profile_id = self.user.profile.id)
 #        print("self.user.is_authenticated: ", self.user.is_authenticated)
 #        print("self.user.profile.friends.all(): ", self.user.profile.friends.all())
 #        print("self.friends: ", self.friends)
