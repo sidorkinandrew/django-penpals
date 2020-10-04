@@ -26,6 +26,27 @@
         <h6>Speaks: {{profile.speaks}}</h6>
         <h6>Learns: {{profile.learns}}</h6>
     </div>
+    {% if request.user.profile.id == profile.id and friends %}
+      <div class="table-responsive">
+        <table class="table">
+          <caption>My list of PenPals:</caption>
+          <thead>
+            <tr>
+              <th>Profile link:</th>
+              <th>Email:</th>
+            </tr>
+          </thead>
+            <tbody>
+              {% for friend_profile in friends %}
+                <tr>
+                  <td><a href="{% url 'pages:profile' friend_profile.id %}">{{friend_profile}}</a></td>
+                  <td>{{friend_profile.user.email}}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    {% endif %}
     {% if request.user.profile.id == profile.id and received_requests %}
       <div class="table-responsive">
         <table class="table">
@@ -33,9 +54,8 @@
             <tbody>
               {% for request_received in received_requests %}
                 <tr>
-                  <td>
-                    {{request_received}}
-                  </td>
+                  <td>{{request_received}}</td>
+                  <td><a href="{% url 'pages:accept_request' request_received.from_profile.id %}" class="btn btn-primary">Accept request</a></td>
                 </tr>
               {% endfor %}
             </tbody>
