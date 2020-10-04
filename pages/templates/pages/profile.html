@@ -16,7 +16,7 @@
         </div>
       {% elif button_friend_text == 'request_sent'%}
         <div class="float-right">
-          <a href="{% url 'pages:send_request' profile.id %}" class="btn btn-warning">Cancel request</a>
+          <a href="{% url 'pages:cancel_request' profile.id %}" class="btn btn-warning">Cancel request</a>
         </div>
       {% endif %}
     {% endif %}
@@ -26,6 +26,22 @@
         <h6>Speaks: {{profile.speaks}}</h6>
         <h6>Learns: {{profile.learns}}</h6>
     </div>
+    {% if request.user.profile.id == profile.id and received_requests %}
+      <div class="table-responsive">
+        <table class="table">
+          <caption>Received friend requests:</caption>
+            <tbody>
+              {% for request_received in received_requests %}
+                <tr>
+                  <td>
+                    {{request_received}}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    {% endif %}
   </div>
 </div>
 
