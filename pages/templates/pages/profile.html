@@ -9,6 +9,16 @@
     <div class="float-right">
       <a href="{% url 'pages:edit' %}" class="btn btn-info">Edit profile</a>
     </div>
+    {% elif request.user.is_authenticated %}
+      {% if button_friend_text == 'not_friend_yet' %}
+        <div class="float-right">
+          <a href="{% url 'pages:send_request' profile.id %}" class="btn btn-info">Add friend</a>
+        </div>
+      {% elif button_friend_text == 'request_sent'%}
+        <div class="float-right">
+          <a href="{% url 'pages:send_request' profile.id %}" class="btn btn-info">Cancel request</a>
+        </div>
+      {% endif %}
     {% endif %}
     <h3>{{profile.user}}</h3>
     <div class="my-4">

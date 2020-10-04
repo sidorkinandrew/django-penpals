@@ -1,12 +1,12 @@
 from django.contrib.auth import authenticate, login
 from django.http import request
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from .models import FriendRequest, Profile
 from .forms import * # UserRegisterForm, ProfileEditForm, ProfileViewForm
 from django.contrib import messages
@@ -50,19 +50,43 @@ class ProfileView(SuccessMessageMixin, DetailView):
     form_class = ProfileViewForm
     context_object_name = 'profile'
     model = Profile
+    friends = Profile.objects.none()
+    instance = Profile.objects.none()
     
     def get_object(self): 
-        instance = Profile.objects.get(id=self.kwargs['profile_id'])  # self.request.user.profile.id)
-        return instance
+        self.instance = Profile.objects.get(id=self.kwargs['profile_id'])  # self.request.user.profile.id)
+        self.friends = FriendRequest.objects.filter(to_profile = self.instance)
+        return self.instance
+    
+    def get_context_data(self, **kwargs):
+        self.instance = kwargs['object']
+        self.friends = self.instance.friends.all()
+        received_requests = FriendRequest.objects.filter(to_profile = self.instance)
+        button_friend_text = ""
+        print("*"*40,'\nget_context_data', self.instance, self.friends)
+        if self.instance.profile.is_authenticated:
+            if self.instance not in self.user.profile.friends.all():
+                button_friend_text = "not_friend_yet"
+                if len(FriendRequest.objects.filter(from_profile = self.request.user.profile).filter(to_profile=self.instance))==1:
+                    button_friend_text = "request_sent"
+        self.context_data = {
+            'profile': self.instance,
+            'friends': self.friends,
+            'received_requests': received_requests,
+            'button_friend_text': button_friend_text,
+        }
+        return self.context_data
     
     def send_request(self, to_profile_id):
-        if self.request.user.is_authenticated:
+        print('send_request', self.user, to_profile_id, type(to_profile_id))
+        if self.user.is_authenticated:
             to_profile = Profile.objects.get(pk=to_profile_id)
             friend_request = FriendRequest.objects.get_or_create(
-                from_profile = self.request.user.profile,
+                from_profile = self.user.profile,
                 to_profile = to_profile
             )
-        return reverse_lazy("pages:profile") #, profile_id = to_profile_id)
+            print(self.user.is_authenticated)
+        return  redirect(reverse('pages:profile', kwargs={ 'profile_id': to_profile_id }))
 
 
 class ProfileEdit(SuccessMessageMixin, UpdateView):
