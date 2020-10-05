@@ -14,4 +14,5 @@ urlpatterns = [
     path("request/delete/<int:from_profile_id>", ProfileView.delete_friend_request, name="delete_request"),
     path("request/accept/<int:from_profile_id>", ProfileView.accept_friend_request, name="accept_request"),
     path("request/drop/<int:to_profile_id>", ProfileView.drop_friend_request, name="drop_request"),
+    path('withdraw/<int:profile_id>', ProfileView.withdraw_request, name="withdraw_request"),
 ]

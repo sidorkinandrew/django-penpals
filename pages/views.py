@@ -79,6 +79,12 @@ class ProfileView(SuccessMessageMixin, DetailView):
             'button_friend_text': button_friend_text,
         }
         return self.context_data
+
+    def withdraw_request(self, profile_id):
+        profile_to_unfriend = Profile.objects.get(pk=profile_id)
+        instance = self.user.profile
+        instance.friends.remove(profile_to_unfriend)
+        return redirect('pages:profile', profile_id = instance.id)
     
     def send_request(self, to_profile_id):
         print('send_request', self.user, to_profile_id)

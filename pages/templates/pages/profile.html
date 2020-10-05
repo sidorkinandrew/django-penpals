@@ -41,6 +41,9 @@
                 <tr>
                   <td><a href="{% url 'pages:profile' friend_profile.id %}">{{friend_profile}}</a></td>
                   <td>{{friend_profile.user.email}}</td>
+                  {% if request.user.profile.id == profile.id %}
+                    <td><a href="{% url 'pages:withdraw_request' friend_profile.id %}"><button class="bth btn-danger">Withdraw request</button></a></td>
+                  {% endif %}
                 </tr>
               {% endfor %}
             </tbody>
