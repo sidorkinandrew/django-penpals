@@ -120,8 +120,6 @@ class ProfileView(SuccessMessageMixin, DetailView):
             request_sent.delete()
         return redirect('pages:profile', profile_id = self.user.profile.id)  # redirect(reverse('pages:profile', kwargs={ 'profile_id': to_profile_id }))
 
-
-
     def accept_friend_request(self, from_profile_id):
         print('accept_friend_request', self.user, from_profile_id)
         from_profile = Profile.objects.get(pk=from_profile_id)
@@ -147,12 +145,6 @@ class ProfileView(SuccessMessageMixin, DetailView):
             ).first()
         request_received.delete()
         return redirect('pages:profile', profile_id = self.user.profile.id)
-#        print("self.user.is_authenticated: ", self.user.is_authenticated)
-#        print("self.user.profile.friends.all(): ", self.user.profile.friends.all())
-#        print("self.friends: ", self.friends)
-#        print("FriendRequest.objects.filter(to_profile = self.user.profile): ", 
-#                FriendRequest.objects.filter(to_profile = self.user.profile))
-#        print("to_profile.friends.all(): ", to_profile.friends.all())
 
 
 class ProfileEdit(SuccessMessageMixin, UpdateView):
