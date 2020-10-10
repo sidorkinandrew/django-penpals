@@ -156,9 +156,16 @@
 
 {% block js %}
 <script type="text/javascript">
+  
   $(document).on('click','.confirm-delete',function(){
     $("#confirmModal").attr("caller-id", $(this).attr("id"));
     $("div.modal-body").text("Are you sure you want to remove "+$(this).attr("id")+"?");
-  })
+  });
+
+  $(document).on('click','#confirmButtonModal',function(){
+    var caller_id = $("#confirmButtonModal").closest(".modal").attr("caller-id");
+    window.location = $("#".concat(caller_id)).attr("href");
+  });
+
 </script>
 {% endblock js %}
