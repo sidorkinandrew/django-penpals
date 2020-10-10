@@ -1,8 +1,8 @@
-from django.utils import path
+from django.urls import path
 from .views import *
 
 app_name = 'conversations'
 
 urlpatterns = [
-    path("inbox", Inbox.as_view(), name="inbox"),
+    path("inbox/", Inbox.as_view(), name="inbox"),
 ]

@@ -22,6 +22,7 @@ urlpatterns = [
     path('cpanel/', admin.site.urls),
     path('', include("pages.urls")),
     path('', include('django.contrib.auth.urls')),
+    path('message/', include("conversations.urls")),
 ]
 
 if settings.DEBUG:
