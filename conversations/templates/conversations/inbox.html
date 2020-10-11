@@ -27,7 +27,7 @@
             <td>{{friend_profile.user.email}}</td>
             {% if request.user.profile.id == profile.id %}
             <td>
-              <a href="#" class="bth btn-outline-info p-2 rounded">Start chatting</a>
+              <a href="{% url 'conversations:inbox_new_chat' friend_profile.id %}" class="bth btn-outline-info p-2 rounded">Start chatting</a>
             </td>
             {% endif %}
           </tr>
