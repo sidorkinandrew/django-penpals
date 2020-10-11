@@ -31,6 +31,7 @@
               {% if request.user.is_authenticated %}
                 <li class="nav-item">
                 <a href="{{request.user.profile.get_absolute_url}}" class="nav-link">Profile</a>
+                <a href="{% url 'conversations:inbox' %}" class="nav-link">Inbox</a>
                 </li>
               {% endif %}
             </ul>
