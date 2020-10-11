@@ -6,6 +6,7 @@ from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Chat, ChatMember, Message
+from .forms import MessageForm
 from pages.models import Profile
 from django.urls import reverse_lazy, reverse
 
@@ -59,5 +60,9 @@ class Inbox(LoginRequiredMixin, UpdateView):
 
 
 class ChatBox(LoginRequiredMixin, UpdateView):
-    def get_object(self):
-        return Profile.objects.get(id=self.user.profile.id) #  self.kwargs['profile_id'])
+    model = Message
+    form_class = MessageForm
+    # TemplateDoesNotExist conversations/chat_form.html
+    def get_object(self, **kwargs):
+        return Chat.objects.get(id=self.kwargs['chat_id']) #  self.kwargs['profile_id'])
+
