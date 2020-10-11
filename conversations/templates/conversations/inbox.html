@@ -21,7 +21,7 @@
           <tr>
           <td>{{forloop.counter}}</td>
             <td>
-              <a href="#">
+              <a href="{% url 'conversations:chatbox' a_chat.chat_id %}">
               Chat with {{a_chat.profile}}
               </a>
             </td>

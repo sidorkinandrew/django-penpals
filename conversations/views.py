@@ -57,3 +57,7 @@ class Inbox(LoginRequiredMixin, UpdateView):
 #    def get_object(self):
 #        return Profile.objects.get(id=self.user.profile.id) #  self.kwargs['profile_id'])
 
+
+class ChatBox(LoginRequiredMixin, UpdateView):
+    def get_object(self):
+        return Profile.objects.get(id=self.user.profile.id) #  self.kwargs['profile_id'])
