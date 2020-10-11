@@ -3,7 +3,35 @@
 <div class="row">
   {% include 'pages/partials/_sidebar.html' %}
   <div class="col-md-9 col-sm-12">
-    <h3>{{profile.user}}</h3>
+    {% if chat_details %}
+      <div class="table-responsive">
+      <table class="table">
+        <caption>
+          List of ongoing conversations:
+        </caption>
+        <thead>
+          <tr>
+            <th>Chat #</th>
+            <th>Chatting with</th>
+            <th>Unread</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a_chat in chat_details %}
+          <tr>
+          <td>{{forloop.counter}}</td>
+            <td>
+              <a href="#">
+              Chat with {{a_chat.profile}}
+              </a>
+            </td>
+            <td>Unread msgs here</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
     {% if friends %}
     <div class="table-responsive">
       <table class="table">
@@ -12,8 +40,8 @@
         </caption>
         <thead>
           <tr>
-            <th>Profile link:</th>
-            <th>Email:</th>
+            <th>Profile link</th>
+            <th>Email</th>
           </tr>
         </thead>
         <tbody>
@@ -34,7 +62,7 @@
           {% endfor %}
         </tbody>
       </table>
-    </div>
+    </div>    
     {% endif %}
   </div>
 </div>

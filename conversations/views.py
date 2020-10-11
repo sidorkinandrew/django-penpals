@@ -20,7 +20,6 @@ class Inbox(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         self.instance = self.request.user.profile
         self.friends = self.instance.friends.all()
-        print("kwargs", kwargs)  # friends_profile
 
         if 'friends_profile' in kwargs and kwargs['friends_profile'] is not None:
             friend_to_chat = self.friends.filter(id=kwargs['friends_profile']).first()
@@ -30,7 +29,6 @@ class Inbox(LoginRequiredMixin, UpdateView):
             me_as_chat_member.save()
             my_friend_as_chat_member = ChatMember(chat=new_chat_with_friend, profile=friend_to_chat, last_viewed=timezone.now())
             my_friend_as_chat_member.save()
-            print(friend_to_chat, new_chat_with_friend, me_as_chat_member, my_friend_as_chat_member)
 
 
         my_chat_ids = self.instance.chats.all().values_list('chat_id', flat=True)  # all chat ids for my profile in a flat list
