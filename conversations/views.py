@@ -62,7 +62,20 @@ class Inbox(LoginRequiredMixin, UpdateView):
 class ChatBox(LoginRequiredMixin, UpdateView):
     model = Message
     form_class = MessageForm
+    template_name = "conversations/chatbox.html"
     # TemplateDoesNotExist conversations/chat_form.html
+
+    def get_context_data(self, **kwargs):
+        self.instance = self.request.user.profile
+        self.messages = Message.objects.get(chat_id=self.kwargs['chat_id']) #  self.kwargs['profile_id'])
+        self.context = {
+            'profile': self.instance,
+            'chat_id': self.kwargs['chat_id'],
+            'messages': self.messages,
+        }
+        return self.context
+
+
     def get_object(self, **kwargs):
-        return Chat.objects.get(id=self.kwargs['chat_id']) #  self.kwargs['profile_id'])
+        return Message.objects.get(chat_id=self.kwargs['chat_id']) #  self.kwargs['profile_id'])
 
