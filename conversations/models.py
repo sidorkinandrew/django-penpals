@@ -21,8 +21,8 @@ class Message(models.Model):
         ordering = ['date']
 
 class ChatMember(models.Model):
-    chat = models.ForeignKey(Chat, related_name = "members", on_delete=models.CASCADE)
-    profile = models.ForeignKey(Profile, related_name = "chats", on_delete=models.CASCADE)
+    chat = models.ForeignKey(Chat, related_name = "members", on_delete=models.CASCADE)  # _id is added automatically
+    profile = models.ForeignKey(Profile, related_name = "chats", on_delete=models.CASCADE) # _id is added automatically
     last_viewed = models.DateTimeField(blank=True, null=True)
     deleted = models.BooleanField(default=False)
     def __str__(self):
