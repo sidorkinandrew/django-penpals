@@ -1,11 +1,29 @@
-{% extends 'pages/base.html' %} {% block content %}
+{% extends 'pages/base.html' %} {% load crispy_forms_tags %} {% block content %}
 
 <div class="row">
   {% include 'pages/partials/_sidebar.html' %}
   <div class="col-md-9 col-sm-12">
-
+    <form
+      action=""
+      method="POST"
+      enctype="multipart/form-data"
+      autocomplete="off"
+    >
+      {% csrf_token %} {% for afield in form %}
+      <div class="input-group mb-3 m-auto flex-row-reverse">
+        <div class="align-self-center w-100">
+        <style>
+        #id_content{
+            width:inherit;
+        }
+        </style>
+            {{afield}}
+        </div>
+        <input type="submit" value="Send" class="text-white text-center my-2 btn btn-info"/>
+      </div>
+      {% endfor %}
+    </form>
   </div>
 </div>
-
 
 {% endblock content %}

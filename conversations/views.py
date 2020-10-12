@@ -67,15 +67,27 @@ class ChatBox(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         self.instance = self.request.user.profile
-        self.messages = Message.objects.get(chat_id=self.kwargs['chat_id']) #  self.kwargs['profile_id'])
+        self.messages = Message.objects.all().filter(chat_id=self.kwargs['chat_id']) #  self.kwargs['profile_id'])
+
         self.context = {
             'profile': self.instance,
             'chat_id': self.kwargs['chat_id'],
+            'form': self.form_class,
             'messages': self.messages,
         }
         return self.context
 
+    def post(self, request, **kwargs):
+        self.form = MessageForm(request.POST)
+        new_message = self.form.save(commit=False)
+        new_message.profile = self.instance
+        new_message.chat_id = self.kwargs['chat_id']
+        new_message.save()
+        messages = Message.objects.filter(chat_id=self.chat_id)
+        last_viewed = ChatMember.objects.filter(chat_id=self.chat_id).filter(profile=self.instance)
+        last_viewed.update(last_viewed = timezone.now())
+        return redirect('conversations:chatbox', chat_id=self.chat_id)
 
     def get_object(self, **kwargs):
-        return Message.objects.get(chat_id=self.kwargs['chat_id']) #  self.kwargs['profile_id'])
+        return Message.objects.all().filter(chat_id=self.kwargs['chat_id']) #  self.kwargs['profile_id'])
 
