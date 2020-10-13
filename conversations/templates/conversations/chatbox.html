@@ -3,6 +3,19 @@
 <div class="row">
   {% include 'pages/partials/_sidebar.html' %}
   <div class="col-md-9 col-sm-12">
+    <div class="p-3" id="messageFeed">
+      {% for amessage in messages %}
+      <div
+        class="card {% if request.user.profile == messages.profile %} ml-auto text-light bg-dark {% endif %}"
+        style="width: 20rem"
+      >
+        <div class="card-header font-weight-bold">
+          {{amessage.profile}} | {{amessage.date}}
+        </div>
+        <div class="card-body">{{amessage}}</div>
+      </div>
+      {% endfor %}
+    </div>
     <form
       action=""
       method="POST"
@@ -12,14 +25,18 @@
       {% csrf_token %} {% for afield in form %}
       <div class="input-group mb-3 m-auto flex-row-reverse">
         <div class="align-self-center w-100">
-        <style>
-        #id_content{
-            width:inherit;
-        }
-        </style>
-            {{afield}}
+          <style>
+            #id_content {
+              width: inherit;
+            }
+          </style>
+          {{afield}}
         </div>
-        <input type="submit" value="Send" class="text-white text-center my-2 btn btn-info"/>
+        <input
+          type="submit"
+          value="Send"
+          class="text-white text-center my-2 btn btn-info"
+        />
       </div>
       {% endfor %}
     </form>

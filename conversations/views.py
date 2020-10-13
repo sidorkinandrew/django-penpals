@@ -78,6 +78,8 @@ class ChatBox(LoginRequiredMixin, UpdateView):
         return self.context
 
     def post(self, request, **kwargs):
+        self.get_context_data(**kwargs)
+        self.chat_id = self.kwargs['chat_id']
         self.form = MessageForm(request.POST)
         new_message = self.form.save(commit=False)
         new_message.profile = self.instance
