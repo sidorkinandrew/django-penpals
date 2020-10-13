@@ -14,7 +14,7 @@ from django.utils import timezone
 
 # Create your views here.
 
-class Inbox(LoginRequiredMixin, UpdateView):
+class Inbox(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = "conversations/inbox.html"
 
@@ -59,7 +59,7 @@ class Inbox(LoginRequiredMixin, UpdateView):
 #        return Profile.objects.get(id=self.user.profile.id) #  self.kwargs['profile_id'])
 
 
-class ChatBox(LoginRequiredMixin, UpdateView):
+class ChatBox(LoginRequiredMixin, DetailView):
     model = Message
     form_class = MessageForm
     template_name = "conversations/chatbox.html"
@@ -73,8 +73,9 @@ class ChatBox(LoginRequiredMixin, UpdateView):
             'profile': self.instance,
             'chat_id': self.kwargs['chat_id'],
             'form': self.form_class,
-            'messages': self.messages,
+            'chat_messages': self.messages,
         }
+        print(self.context)
         return self.context
 
     def post(self, request, **kwargs):
