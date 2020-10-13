@@ -6,7 +6,7 @@
     <div class="p-3" id="messageFeed">
       {% for amessage in chat_messages %}
       <div
-        class="card {% if request.user.profile.id == profile.id %} ml-auto text-light bg-dark {% endif %}"
+        class="card {% if request.user.profile == amessage.profile %} ml-auto text-light bg-dark {% endif %}"
         style="width: 20rem"
       >
         <div class="card-header font-weight-bold">
