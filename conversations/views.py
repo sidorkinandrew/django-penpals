@@ -21,15 +21,28 @@ class Inbox(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         self.instance = self.request.user.profile
         self.friends = self.instance.friends.all()
+        self.context = {
+            'profile': self.instance,
+            'friends': self.friends,
+        }
 
         if 'friends_profile' in kwargs and kwargs['friends_profile'] is not None:
             friend_to_chat = self.friends.filter(id=kwargs['friends_profile']).first()
-            new_chat_with_friend = Chat()
-            new_chat_with_friend.save()
-            me_as_chat_member = ChatMember(chat=new_chat_with_friend, profile=self.instance, last_viewed=timezone.now())
-            me_as_chat_member.save()
-            my_friend_as_chat_member = ChatMember(chat=new_chat_with_friend, profile=friend_to_chat, last_viewed=timezone.now())
-            my_friend_as_chat_member.save()
+            chats_deleted = ChatMember.objects.filter(profile=self.instance, deleted=True).values_list('chat_id', flat=True)
+            if chats_deleted:
+                chat_with_friend = ChatMember.objects.filter(chat_id__in=chats_deleted, profile_id=friend_to_chat.id).first()
+
+                if chat_with_friend:
+                    member_to_undelete = ChatMember.objects.get(chat_id=chat_with_friend.chat_id, profile=self.instance)
+                    member_to_undelete.deleted = False
+                    member_to_undelete.save()
+                else:
+                    new_chat_with_friend = Chat()
+                    new_chat_with_friend.save()
+                    me_as_chat_member = ChatMember(chat=new_chat_with_friend, profile=self.instance, last_viewed=timezone.now())
+                    me_as_chat_member.save()
+                    my_friend_as_chat_member = ChatMember(chat=new_chat_with_friend, profile=friend_to_chat, last_viewed=timezone.now())
+                    my_friend_as_chat_member.save()
 
 
         my_chat_ids = self.instance.chats.all().values_list('chat_id', flat=True)  # all chat ids for my profile in a flat list
