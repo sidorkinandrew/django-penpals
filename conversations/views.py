@@ -52,7 +52,7 @@ class Inbox(LoginRequiredMixin, DetailView):
 
     def get(self, request, **kwargs):
         self.get_context_data(**kwargs)
-        print(self.context, kwargs)
+        print(self.context, request, kwargs)
         return render(request, self.template_name, self.context)
 
 #    def get_object(self):
