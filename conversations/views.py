@@ -92,12 +92,12 @@ class ChatBox(LoginRequiredMixin, DetailView):
         return redirect('conversations:chatbox', chat_id=self.chat_id)
     
     def delete_chat(self, **kwargs):
-        self.chat_id = self.kwargs['chat_id']
+        self.chat_id = kwargs['chat_id']
         chat_to_delete = Chat.objects.get(id=self.chat_id)
         chat_members = chat_to_delete.members.all()
         me_in_the_chat, friends_in_the_chat = "", ""
         for amember in chat_members:
-            if amember.profile == self.request.user.profile:
+            if amember.profile == self.user.profile:
                 me_in_the_chat = amember
             else:
                 friends_in_the_chat = amember  #friends_in_the_chat.append(amember)
@@ -108,7 +108,8 @@ class ChatBox(LoginRequiredMixin, DetailView):
         
         if friends_in_the_chat.deleted:
             chat_to_delete.save()
-            return redirect("conversations:inbox")
+        return redirect('conversations:inbox')
+
 
     def get_object(self, **kwargs):
         return Message.objects.all().filter(chat_id=self.kwargs['chat_id']) #  self.kwargs['profile_id'])

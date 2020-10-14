@@ -24,8 +24,15 @@
               <a href="{% url 'conversations:chatbox' a_chat.chat_id %}">
                 Chat with {{a_chat.profile}}
               </a>
-            </td>
+            </td>            
             <td>Unread msgs here</td>
+            <td>
+              <a
+                href="{% url 'conversations:delete_chat' a_chat.chat_id %}"
+                class="bth btn-outline-danger p-2 rounded"
+                >Delete chat</a
+              >
+            </td>
           </tr>
           {% endfor %}
         </tbody>
@@ -59,13 +66,6 @@
                 href="{% url 'conversations:inbox_new_chat' friend_profile.id %}"
                 class="bth btn-outline-info p-2 rounded"
                 >Start chatting</a
-              >
-            </td>
-            <td>
-              <a
-                href="{% url 'conversations:delete_chat' friend_profile.chat_id %}"
-                class="bth btn-outline-danger p-2 rounded"
-                >Delete chat</a
               >
             </td>
             {% endif %}
