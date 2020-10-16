@@ -122,7 +122,12 @@ class ChatBox(LoginRequiredMixin, DetailView):
         if friends_in_the_chat.deleted:
             chat_to_delete.save()
         return redirect('conversations:inbox')
-
+    
+    def delete_message(self, **kwargs):
+        self.message_id = kwargs['message_id']
+        message_to_delete = Message.objects.get(id=self.message_id)
+        message_to_delete.delete()
+        return redirect('conversations:chatbox', chat_id = message_to_delete.chat_id)
 
     def get_object(self, **kwargs):
         return Message.objects.all().filter(chat_id=self.kwargs['chat_id']) #  self.kwargs['profile_id'])

@@ -7,10 +7,15 @@
       {% for amessage in chat_messages %}
       <div
         class="card {% if request.user.profile == amessage.profile %} ml-auto text-light bg-dark {% endif %}"
-        style="width: 20rem"
+        style="width: 21rem"
       >
         <div class="card-header font-weight-bold">
           {{amessage.profile}} | {{amessage.date}}
+          {% if request.user.profile == amessage.profile %}
+            <a href="{% url 'conversations:delete_message' amessage.id %}" class="close text-light">
+            <span>&times;</span>
+            </a>
+          {% endif %}
         </div>
         <div class="card-body">{{amessage}}</div>
       </div>
