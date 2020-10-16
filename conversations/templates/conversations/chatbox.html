@@ -49,3 +49,12 @@
 </div>
 
 {% endblock content %}
+
+
+{% block js %}
+<script>
+  var message_feed_element = $('#messageFeed');
+  message_feed_element.scrollTop(message_feed_element.prop("scrollHeight"));
+  $("#id_content").focus();
+</script>
+{% endblock js %}
