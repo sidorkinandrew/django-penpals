@@ -56,5 +56,6 @@
   var message_feed_element = $('#messageFeed');
   message_feed_element.scrollTop(message_feed_element.prop("scrollHeight"));
   $("#id_content").focus();
+  $('html,body').animate({scrollTop:$(document).height()},'slow');
 </script>
 {% endblock js %}
