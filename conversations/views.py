@@ -48,6 +48,7 @@ class Inbox(LoginRequiredMixin, DetailView):
         my_chat_ids = self.instance.chats.all().values_list('chat_id', flat=True)  # all chat ids for my profile in a flat list
         my_chat_objects = Chat.objects.filter(id__in=my_chat_ids)  # all chats ids i'm in 
         im_chatting_with = []
+        unread_messages = []
 
         for a_chat in my_chat_objects:
             a_chat_profile = a_chat.members.get(profile=self.instance)  # get me
@@ -56,20 +57,27 @@ class Inbox(LoginRequiredMixin, DetailView):
                 im_chatting_with.append(my_friend_in_a_chat)  # adding this user/profile to ongoing chats
                 self.friends = self.friends.exclude(user=my_friend_in_a_chat.profile.user)  # exclude the freind i'm already chatting with
 
+                if a_chat.get_msg.count()>0:
+                    message_date = a_chat.get_msg.values('date').latest('date')
+                    last_viewed_date = a_chat.members.filter(profile=self.instance).values('last_viewed').first()
+                    if message_date['date'] > last_viewed_date['last_viewed']:
+                        message_count = a_chat.get_msg.filter(date__gt=last_viewed_date['last_viewed']).count()
+                        unread_messages.append(message_count)
+                    else:
+                        unread_messages.append(False)
+                else:
+                    unread_messages.append(False)
+
         self.context = {
             'profile': self.instance,
             'friends': self.friends,
-            'chat_details': im_chatting_with,
+            'chat_details': zip(im_chatting_with, unread_messages),
         }
         return self.context
 
     def get(self, request, **kwargs):
         self.get_context_data(**kwargs)
-        print(self.context, request, kwargs)
         return render(request, self.template_name, self.context)
-
-#    def get_object(self):
-#        return Profile.objects.get(id=self.user.profile.id) #  self.kwargs['profile_id'])
 
 
 class ChatBox(LoginRequiredMixin, DetailView):

@@ -18,7 +18,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for a_chat in chat_details %}
+          {% for a_chat, unread_msgs in chat_details %}
           <tr>
             <td>{{forloop.counter}}</td>
             <td>
@@ -26,7 +26,16 @@
                 Chat with {{a_chat.profile}}
               </a>
             </td>            
-            <td>Unread msgs here</td>
+            <td>
+              {% if unread_msgs %}
+              <a href="{% url 'conversations:chatbox' a_chat.chat_id %}">
+                <h5><span class="badge badge-primary badge-pill">{{unread_msgs}}</span></h5>
+              </a>
+              {% else %}
+                <p> - </p>
+              {% endif %}
+              </a>
+            </td>
             <td>
               <a
                 href="{% url 'conversations:delete_chat' a_chat.chat_id %}"
